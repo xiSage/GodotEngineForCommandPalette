@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "GodotEngineForCommandPalette (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "GodotEngineForCommandPalette (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -15,7 +15,7 @@ namespace GodotEngineForCommandPalette;
 
 internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 {
-    private readonly List<ListItem> _projectItems = [];
+    public readonly List<ListItem> ProjectItems = [];
     private readonly ListItem _refreshButton;
     private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
     {
@@ -53,12 +53,12 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
     private void RefreshProjects()
     {
         IsLoading = true;
-        _projectItems.Clear();
+        ProjectItems.Clear();
 
         // Check if Godot data path is set
         if (string.IsNullOrEmpty(_settings.GodotDataPath))
         {
-            _projectItems.Add(new ListItem(new NoOpCommand())
+            ProjectItems.Add(new ListItem(new NoOpCommand())
             {
                 Title = "Please configure Godot data path in settings",
                 Subtitle = "Go to Command Palette settings > Godot Engine for Command Palette"
@@ -91,11 +91,11 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
                             }
                         }
                     }
-                    _projectItems.Add(new GodotProjectListItem(name, section, icon, _settings.GodotPath));
+                    ProjectItems.Add(new GodotProjectListItem(name, section, icon, _settings.GodotPath));
                 }
                 catch (Exception ex)
                 {
-                    _projectItems.Add(new ListItem(new NoOpCommand())
+                    ProjectItems.Add(new ListItem(new NoOpCommand())
                     {
                         Title = "Error loading project",
                         Subtitle = ex.Message
@@ -110,7 +110,7 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 
     public override IListItem[] GetItems()
     {
-        return [.. _projectItems, _refreshButton];
+        return [.. ProjectItems, _refreshButton];
     }
 }
 
@@ -120,7 +120,7 @@ internal sealed partial class GodotProjectListItem : ListItem
     {
         Title = title;
         Subtitle = path;
-        Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = "Edit" };
+        Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = "Edit", Id = path };
         var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = "Run" };
         MoreCommands = [new CommandContextItem(runCommand)];
         var iconPath = Path.Join(path, icon[6..]);

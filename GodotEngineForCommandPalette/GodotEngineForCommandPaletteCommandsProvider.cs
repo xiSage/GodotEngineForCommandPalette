@@ -4,6 +4,7 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System.Linq;
 
 namespace GodotEngineForCommandPalette;
 
@@ -27,6 +28,16 @@ public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvi
     public override ICommandItem[] TopLevelCommands()
     {
         return _commands;
+    }
+
+    public override ICommandItem? GetCommandItem(string id)
+    {
+        var allCommands = (_commands[0].Command as GodotEngineForCommandPalettePage)?.ProjectItems;
+        if (allCommands is not null)
+        {
+            return allCommands.FirstOrDefault(c => c.Command?.Id == id);
+        }
+        return null;
     }
 
 }

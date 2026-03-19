@@ -307,7 +307,7 @@
     <PropertyGroup>
         <AppxPackageIdentityName>xiSage.GodotEngineforCommandPalette</AppxPackageIdentityName>
         <AppxPackagePublisher>CN=21F9E946-8618-4BD9-BC2C-D7B302DB759F</AppxPackagePublisher>
-        <AppxPackageVersion>0.0.1.0</AppxPackageVersion>
+        <AppxPackageVersion>1.1.0.0</AppxPackageVersion>
         <DefaultLanguage>en</DefaultLanguage>
     </PropertyGroup>
 

@@ -11,7 +11,7 @@
   <Identity
     Name="xiSage.GodotEngineforCommandPalette"
     Publisher="CN=21F9E946-8618-4BD9-BC2C-D7B302DB759F"
-    Version="1.0.0.0" />
+    Version="1.1.0.0" />
   <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
 

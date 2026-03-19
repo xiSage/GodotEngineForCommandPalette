@@ -66,11 +66,12 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         }
         else
         {
-            try
+
+            var projectsCfg = new GodotConfigFile.ConfigFile();
+            projectsCfg.Load(Path.Join(_settings.GodotDataPath, "projects.cfg"));
+            foreach (var section in projectsCfg.GetSections())
             {
-                var projectsCfg = new GodotConfigFile.ConfigFile();
-                projectsCfg.Load(Path.Join(_settings.GodotDataPath, "projects.cfg"));
-                foreach (var section in projectsCfg.GetSections())
+                try
                 {
                     var projectCfg = new GodotConfigFile.ConfigFile();
                     projectCfg.Load(Path.Join(section, "project.godot"));
@@ -92,15 +93,16 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
                     }
                     _projectItems.Add(new GodotProjectListItem(name, section, icon, _settings.GodotPath));
                 }
-            }
-            catch (Exception ex)
-            {
-                _projectItems.Add(new ListItem(new NoOpCommand())
+                catch (Exception ex)
                 {
-                    Title = "Error loading projects",
-                    Subtitle = ex.Message
-                });
+                    _projectItems.Add(new ListItem(new NoOpCommand())
+                    {
+                        Title = "Error loading project",
+                        Subtitle = ex.Message
+                    });
+                }
             }
+
         }
         RaiseItemsChanged();
         IsLoading = false;
@@ -119,7 +121,8 @@ internal sealed partial class GodotProjectListItem : ListItem
         Title = title;
         Subtitle = path;
         Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = "Edit" };
-        MoreCommands = [new CommandContextItem(new AnonymousCommand(() => RunProject(path, godotPath)) { Name = "Run" })];
+        var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = "Run" };
+        MoreCommands = [new CommandContextItem(runCommand)];
         var iconPath = Path.Join(path, icon[6..]);
         if (File.Exists(iconPath))
         {
@@ -135,7 +138,7 @@ internal sealed partial class GodotProjectListItem : ListItem
         }
         else
         {
-            Process.Start(godotPath, ["-e", "--path", path]);
+            _ = Process.Start(godotPath, ["-e", "--path", path]);
         }
     }
 
@@ -147,7 +150,7 @@ internal sealed partial class GodotProjectListItem : ListItem
         }
         else
         {
-            Process.Start(godotPath, ["--path", path]);
+            _ = Process.Start(godotPath, ["--path", path]);
         }
     }
 }

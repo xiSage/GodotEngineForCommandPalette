@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <RootNamespace>GodotEngineForCommandPalette</RootNamespace>
@@ -34,6 +34,12 @@
     </Content>
     <Content Include="Assets\**\*.png" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Strings\**\*.resw" />
+  </ItemGroup>
+
+
 
     <Target Name="PrepareAssets" BeforeTargets="BeforeBuild">
         <!-- Copy scale-specific assets to base filenames expected by store validations -->
@@ -256,6 +262,9 @@
     <Content Update="Assets\Wide310x150Logo.scale-400.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="Strings\zh-CN\Resources.resw">
+      <Generator></Generator>
+    </Content>
   </ItemGroup>
 
   <!--
@@ -308,7 +317,7 @@
         <AppxPackageIdentityName>xiSage.GodotEngineforCommandPalette</AppxPackageIdentityName>
         <AppxPackagePublisher>CN=21F9E946-8618-4BD9-BC2C-D7B302DB759F</AppxPackagePublisher>
         <AppxPackageVersion>1.1.0.0</AppxPackageVersion>
-        <DefaultLanguage>en</DefaultLanguage>
+        <DefaultLanguage>en-US</DefaultLanguage>
     </PropertyGroup>
 
 </Project>

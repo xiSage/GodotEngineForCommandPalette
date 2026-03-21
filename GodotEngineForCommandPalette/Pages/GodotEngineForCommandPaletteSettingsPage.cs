@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation
+// Copyright (c) Microsoft Corporation
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -108,17 +108,17 @@ internal sealed partial class GodotSettingsProvider : ICommandSettings
         _settings = new Settings();
 
         // Add Godot editor path setting
-        _settings.Add(new TextSetting("godotPath", "Godot Editor Path", "Path to the Godot editor executable", _godotSettings.GodotPath)
+        _settings.Add(new TextSetting("godotPath", LocaleLoader.GetString("GodotEditorPathLabel"), LocaleLoader.GetString("GodotEditorPathDescription"), _godotSettings.GodotPath)
         {
-            Placeholder = "C:\\Path\\To\\Godot.exe",
+            Placeholder = LocaleLoader.GetString("GodotEditorPathPlaceholder"),
             IsRequired = true,
-            ErrorMessage = "Please enter a valid Godot executable path"
+            ErrorMessage = LocaleLoader.GetString("GodotEditorPathError")
         });
 
         // Add Godot data path setting
-        _settings.Add(new TextSetting("godotDataPath", "Godot Data Path", "Path to Godot's application data folder", _godotSettings.GodotDataPath)
+        _settings.Add(new TextSetting("godotDataPath", LocaleLoader.GetString("GodotDataPathLabel"), LocaleLoader.GetString("GodotDataPathDescription"), _godotSettings.GodotDataPath)
         {
-            Placeholder = "C:\\Users\\YourName\\AppData\\Roaming\\Godot"
+            Placeholder = LocaleLoader.GetString("GodotDataPathPlaceholder")
         });
 
         // Subscribe to settings changes

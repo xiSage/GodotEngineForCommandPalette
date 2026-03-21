@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation
+// Copyright (c) Microsoft Corporation
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
@@ -27,8 +27,8 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
     public GodotEngineForCommandPalettePage()
     {
         Icon = IconHelpers.FromRelativePath(@"Assets\Logo.png");
-        Title = "Godot Engine for Command Palette";
-        Name = "Open";
+        Title = LocaleLoader.GetString("PageTitle");
+        Name = LocaleLoader.GetString("PageName");
 
         _settings = GodotSettings.Load();
 
@@ -37,7 +37,7 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 
         _refreshButton = new(new AnonymousCommand(RefreshProjects) { Result = CommandResult.KeepOpen() })
         {
-            Title = "Refresh",
+            Title = LocaleLoader.GetString("RefreshButton"),
             Icon = IconHelpers.FromRelativePaths(@"Assets\ArrowClockwiseLight.png", @"Assets\ArrowClockwiseDark.png"),
         };
         RefreshProjects();
@@ -60,8 +60,8 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         {
             ProjectItems.Add(new ListItem(new NoOpCommand())
             {
-                Title = "Please configure Godot data path in settings",
-                Subtitle = "Go to Command Palette settings > Godot Engine for Command Palette"
+                Title = LocaleLoader.GetString("ConfigurePathMessage"),
+                Subtitle = LocaleLoader.GetString("ConfigurePathSubtitle")
             });
         }
         else
@@ -97,7 +97,7 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
                 {
                     ProjectItems.Add(new ListItem(new NoOpCommand())
                     {
-                        Title = "Error loading project",
+                        Title = LocaleLoader.GetString("ErrorLoadingProject"),
                         Subtitle = ex.Message
                     });
                 }
@@ -120,8 +120,8 @@ internal sealed partial class GodotProjectListItem : ListItem
     {
         Title = title;
         Subtitle = path;
-        Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = "Edit", Id = path };
-        var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = "Run" };
+        Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = LocaleLoader.GetString("EditCommand"), Id = path };
+        var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = LocaleLoader.GetString("RunCommand") };
         MoreCommands = [new CommandContextItem(runCommand)];
         var iconPath = Path.Join(path, icon[6..]);
         if (File.Exists(iconPath))

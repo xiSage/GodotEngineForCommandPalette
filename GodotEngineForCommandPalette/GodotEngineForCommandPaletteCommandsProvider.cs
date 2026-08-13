@@ -11,17 +11,20 @@ public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvi
 {
     private readonly ICommandItem[] _commands;
     private readonly GodotProjectCatalog _catalog = new(new FileSystem());
+    private readonly GodotSettingsStore _store;
 
     public GodotEngineForCommandPaletteCommandsProvider()
     {
         DisplayName = LocaleLoader.GetString("DisplayName");
         Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
 
+        _store = new GodotSettingsStore();
+
         // Set up the settings provider
-        Settings = new GodotSettingsProvider();
+        Settings = new GodotSettingsProvider(_store);
 
         _commands = [
-            new CommandItem(new GodotEngineForCommandPalettePage()) { Title = DisplayName },
+            new CommandItem(new GodotEngineForCommandPalettePage(_store)) { Title = DisplayName },
         ];
     }
 
@@ -32,7 +35,7 @@ public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvi
 
     public override ICommandItem? GetCommandItem(string id)
     {
-        var settings = GodotSettings.Load();
+        var settings = _store.Load();
         if (string.IsNullOrEmpty(settings.GodotDataPath))
         {
             return null;

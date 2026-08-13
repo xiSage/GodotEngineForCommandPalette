@@ -15,19 +15,22 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
     private readonly List<ListItem> ProjectItems = [];
     private readonly ListItem _refreshButton;
     private readonly GodotProjectCatalog _catalog = new(new FileSystem());
+    private readonly GodotSettingsStore _store;
 
     private GodotSettings _settings;
 
-    public GodotEngineForCommandPalettePage()
+    public GodotEngineForCommandPalettePage(GodotSettingsStore store)
     {
+        _store = store;
+
         Icon = IconHelpers.FromRelativePath(@"Assets\Logo.png");
         Title = LocaleLoader.GetString("PageTitle");
         Name = LocaleLoader.GetString("PageName");
 
-        _settings = GodotSettings.Load();
+        _settings = _store.Load();
 
         // Subscribe to settings changes
-        GodotSettings.SettingsChanged += OnSettingsChanged;
+        _store.Changed += OnSettingsChanged;
 
         _refreshButton = new(new AnonymousCommand(RefreshProjects) { Result = CommandResult.KeepOpen() })
         {
@@ -40,7 +43,7 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
     private void OnSettingsChanged(object? sender, EventArgs e)
     {
         // Reload settings and refresh projects
-        _settings = GodotSettings.Load();
+        _settings = _store.Load();
         RefreshProjects();
     }
 

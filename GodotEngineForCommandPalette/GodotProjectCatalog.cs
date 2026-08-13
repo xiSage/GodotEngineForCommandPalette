@@ -23,7 +23,7 @@ internal sealed class FileSystem : IFileSystem
 
 public sealed record GodotProject(string Title, string Path, string? IconPath, string? Error, bool IsFavorite = false);
 
-public sealed class GodotProjectCatalog
+public sealed class GodotProjectCatalog(IFileSystem fileSystem)
 {
     private const string ResPrefix = "res://";
     private const string UidPrefix = "uid://";
@@ -31,18 +31,11 @@ public sealed class GodotProjectCatalog
     private const string ProjectGodotFileName = "project.godot";
     private const string UidCacheRelativePath = ".godot/uid_cache.bin";
 
-    private readonly IFileSystem _fileSystem;
-
-    public GodotProjectCatalog(IFileSystem fileSystem)
-    {
-        _fileSystem = fileSystem;
-    }
-
     public List<GodotProject> FindProjects(string godotDataPath)
     {
         var projects = new List<GodotProject>();
         var projectsCfgPath = Path.Join(godotDataPath, ProjectsCfgFileName);
-        if (!_fileSystem.FileExists(projectsCfgPath))
+        if (!fileSystem.FileExists(projectsCfgPath))
         {
             return projects;
         }
@@ -50,7 +43,7 @@ public sealed class GodotProjectCatalog
         var projectsCfg = new GodotConfigFile.ConfigFile();
         try
         {
-            projectsCfg.Parse(_fileSystem.ReadAllText(projectsCfgPath));
+            projectsCfg.Parse(fileSystem.ReadAllText(projectsCfgPath));
         }
         catch
         {
@@ -81,13 +74,13 @@ public sealed class GodotProjectCatalog
         try
         {
             var projectGodotPath = Path.Join(projectPath, ProjectGodotFileName);
-            if (!_fileSystem.FileExists(projectGodotPath))
+            if (!fileSystem.FileExists(projectGodotPath))
             {
                 return Failed(projectPath, "project.godot not found", isFavorite);
             }
 
             var projectCfg = new GodotConfigFile.ConfigFile();
-            projectCfg.Parse(_fileSystem.ReadAllText(projectGodotPath));
+            projectCfg.Parse(fileSystem.ReadAllText(projectGodotPath));
 
             var name = projectCfg.GetValue("application", "config/name", "");
             var icon = projectCfg.GetValue("application", "config/icon", "");
@@ -120,7 +113,7 @@ public sealed class GodotProjectCatalog
         if (icon.StartsWith(UidPrefix, StringComparison.Ordinal))
         {
             var uidCachePath = Path.Join(projectPath, UidCacheRelativePath);
-            if (_fileSystem.FileExists(uidCachePath))
+            if (fileSystem.FileExists(uidCachePath))
             {
                 var converted = ResourceUID.GetPathFromCache(uidCachePath, icon);
                 if (converted.StartsWith(ResPrefix, StringComparison.Ordinal))
@@ -133,5 +126,5 @@ public sealed class GodotProjectCatalog
         return null;
     }
 
-    private string? ExistingPath(string path) => _fileSystem.FileExists(path) ? path : null;
+    private string? ExistingPath(string path) => fileSystem.FileExists(path) ? path : null;
 }

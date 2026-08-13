@@ -19,15 +19,8 @@ public sealed class ProcessStarter : IProcessStarter
     }
 }
 
-public sealed class GodotLauncher
+public sealed class GodotLauncher(IProcessStarter starter)
 {
-    private readonly IProcessStarter _starter;
-
-    public GodotLauncher(IProcessStarter starter)
-    {
-        _starter = starter;
-    }
-
     public void EditProject(string godotPath, string projectPath)
     {
         if (string.IsNullOrEmpty(godotPath))
@@ -36,7 +29,7 @@ public sealed class GodotLauncher
         }
         else
         {
-            _starter.Start(godotPath, ["-e", "--path", projectPath]);
+            starter.Start(godotPath, ["-e", "--path", projectPath]);
         }
     }
 
@@ -48,7 +41,7 @@ public sealed class GodotLauncher
         }
         else
         {
-            _starter.Start(godotPath, ["--path", projectPath]);
+            starter.Start(godotPath, ["--path", projectPath]);
         }
     }
 }

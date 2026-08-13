@@ -45,22 +45,18 @@ public static class ProjectSorter
 
         return sortMode switch
         {
-            ProjectSortMode.NameAsc => projects
+            ProjectSortMode.NameAsc => [.. projects
                 .OrderBy(p => p.Title, byTitle)
-                .ThenBy(p => p.Path, byPath)
-                .ToList(),
-            ProjectSortMode.NameDesc => projects
+                .ThenBy(p => p.Path, byPath)],
+            ProjectSortMode.NameDesc => [.. projects
                 .OrderByDescending(p => p.Title, byTitle)
-                .ThenBy(p => p.Path, byPath)
-                .ToList(),
-            ProjectSortMode.PathAsc => projects
+                .ThenBy(p => p.Path, byPath)],
+            ProjectSortMode.PathAsc => [.. projects
                 .OrderBy(p => p.Path, byPath)
-                .ThenBy(p => p.Title, byTitle)
-                .ToList(),
-            ProjectSortMode.PathDesc => projects
+                .ThenBy(p => p.Title, byTitle)],
+            ProjectSortMode.PathDesc => [.. projects
                 .OrderByDescending(p => p.Path, byPath)
-                .ThenBy(p => p.Title, byTitle)
-                .ToList(),
+                .ThenBy(p => p.Title, byTitle)],
             _ => projects,
         };
     }

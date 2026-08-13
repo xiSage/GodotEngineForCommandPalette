@@ -29,7 +29,7 @@ public sealed record GodotSettings
     public bool FavoriteOnTop { get; init; } = true;
 }
 
-public sealed class GodotSettingsStore
+public sealed class GodotSettingsStore(string? filePath = null)
 {
     public event EventHandler? Changed;
 
@@ -37,12 +37,7 @@ public sealed class GodotSettingsStore
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
         "Microsoft", "PowerToys", "CommandPalette", "Extensions", "GodotEngineForCommandPalette", "settings.json");
 
-    private readonly string _filePath;
-
-    public GodotSettingsStore(string? filePath = null)
-    {
-        _filePath = filePath ?? DefaultFilePath;
-    }
+    private readonly string _filePath = filePath ?? DefaultFilePath;
 
     public GodotSettings Load()
     {

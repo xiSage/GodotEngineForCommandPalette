@@ -2,8 +2,6 @@
 // xiSage licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System.Collections.Generic;
-using GodotEngineForCommandPalette;
 using Xunit;
 
 namespace GodotEngineForCommandPalette.Tests;
@@ -23,7 +21,10 @@ public class GodotLauncherTests
         }
     }
 
-    private static GodotLauncher CreateLauncher(RecordingProcessStarter starter) => new(starter);
+    private static GodotLauncher CreateLauncher(RecordingProcessStarter starter)
+    {
+        return new(starter);
+    }
 
     [Fact]
     public void EditProject_StartsGodotWithEditorArgs()
@@ -33,9 +34,9 @@ public class GodotLauncherTests
 
         launcher.EditProject(GodotPath, ProjectPath);
 
-        var call = Assert.Single(starter.Calls);
-        Assert.Equal(GodotPath, call.FileName);
-        Assert.Equal(new[] { "-e", "--path", ProjectPath }, call.Arguments);
+        var (FileName, Arguments) = Assert.Single(starter.Calls);
+        Assert.Equal(GodotPath, FileName);
+        Assert.Equal(new[] { "-e", "--path", ProjectPath }, Arguments);
     }
 
     [Fact]
@@ -46,9 +47,9 @@ public class GodotLauncherTests
 
         launcher.RunProject(GodotPath, ProjectPath);
 
-        var call = Assert.Single(starter.Calls);
-        Assert.Equal(GodotPath, call.FileName);
-        Assert.Equal(new[] { "--path", ProjectPath }, call.Arguments);
+        var (FileName, Arguments) = Assert.Single(starter.Calls);
+        Assert.Equal(GodotPath, FileName);
+        Assert.Equal(new[] { "--path", ProjectPath }, Arguments);
     }
 
     [Fact]

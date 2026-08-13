@@ -123,11 +123,21 @@ internal sealed partial class GodotProjectListItem : ListItem
         Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = LocaleLoader.GetString("EditCommand"), Id = path };
         var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = LocaleLoader.GetString("RunCommand") };
         MoreCommands = [new CommandContextItem(runCommand)];
-        var iconPath = Path.Join(path, icon[6..]);
-        if (File.Exists(iconPath))
+        var iconPath = ResolveIconPath(path, icon);
+        if (!string.IsNullOrEmpty(iconPath) && File.Exists(iconPath))
         {
             Icon = new IconInfo(iconPath);
         }
+    }
+
+    private static string ResolveIconPath(string projectPath, string icon)
+    {
+        const string resPrefix = "res://";
+        if (icon.StartsWith(resPrefix, StringComparison.Ordinal))
+        {
+            return Path.Join(projectPath, icon[resPrefix.Length..]);
+        }
+        return "";
     }
 
     private static void OpenProject(string path, string godotPath)

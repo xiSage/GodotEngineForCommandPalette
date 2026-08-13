@@ -6,7 +6,6 @@ using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GodotEngineForCommandPalette;
 
@@ -91,40 +90,18 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 
 internal sealed partial class GodotProjectListItem : ListItem
 {
+    private readonly GodotLauncher _launcher = new(new ProcessStarter());
+
     public GodotProjectListItem(GodotProject project, string godotPath) : base(new NoOpCommand())
     {
         Title = project.Title;
         Subtitle = project.Path;
-        Command = new AnonymousCommand(() => OpenProject(project.Path, godotPath)) { Name = LocaleLoader.GetString("EditCommand"), Id = project.Path };
-        var runCommand = new AnonymousCommand(() => RunProject(project.Path, godotPath)) { Name = LocaleLoader.GetString("RunCommand") };
+        Command = new AnonymousCommand(() => _launcher.EditProject(godotPath, project.Path)) { Name = LocaleLoader.GetString("EditCommand"), Id = project.Path };
+        var runCommand = new AnonymousCommand(() => _launcher.RunProject(godotPath, project.Path)) { Name = LocaleLoader.GetString("RunCommand") };
         MoreCommands = [new CommandContextItem(runCommand)];
         if (project.IconPath is not null)
         {
             Icon = new IconInfo(project.IconPath);
-        }
-    }
-
-    private static void OpenProject(string path, string godotPath)
-    {
-        if (string.IsNullOrEmpty(godotPath))
-        {
-            return;
-        }
-        else
-        {
-            _ = Process.Start(godotPath, ["-e", "--path", path]);
-        }
-    }
-
-    private static void RunProject(string path, string godotPath)
-    {
-        if (string.IsNullOrEmpty(godotPath))
-        {
-            return;
-        }
-        else
-        {
-            _ = Process.Start(godotPath, ["--path", path]);
         }
     }
 }

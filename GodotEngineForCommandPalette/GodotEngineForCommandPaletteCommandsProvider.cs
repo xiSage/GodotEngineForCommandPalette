@@ -4,13 +4,13 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using System.Linq;
 
 namespace GodotEngineForCommandPalette;
 
 public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvider
 {
     private readonly ICommandItem[] _commands;
+    private readonly GodotProjectCatalog _catalog = new(new FileSystem());
 
     public GodotEngineForCommandPaletteCommandsProvider()
     {
@@ -32,10 +32,18 @@ public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvi
 
     public override ICommandItem? GetCommandItem(string id)
     {
-        var allCommands = (_commands[0].Command as GodotEngineForCommandPalettePage)?.ProjectItems;
-        if (allCommands is not null)
+        var settings = GodotSettings.Load();
+        if (string.IsNullOrEmpty(settings.GodotDataPath))
         {
-            return allCommands.FirstOrDefault(c => c.Command?.Id == id);
+            return null;
+        }
+
+        foreach (var project in _catalog.FindProjects(settings.GodotDataPath))
+        {
+            if (project.Error is null && project.Path == id)
+            {
+                return new GodotProjectListItem(project, settings.GodotPath);
+            }
         }
         return null;
     }

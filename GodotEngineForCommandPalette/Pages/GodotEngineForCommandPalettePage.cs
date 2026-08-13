@@ -12,7 +12,7 @@ namespace GodotEngineForCommandPalette;
 
 internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 {
-    public readonly List<ListItem> ProjectItems = [];
+    private readonly List<ListItem> ProjectItems = [];
     private readonly ListItem _refreshButton;
     private readonly GodotProjectCatalog _catalog = new(new FileSystem());
 

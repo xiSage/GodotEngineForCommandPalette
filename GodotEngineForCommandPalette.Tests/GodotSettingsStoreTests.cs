@@ -37,6 +37,8 @@ public class GodotSettingsStoreTests : IDisposable
 
         Assert.Equal("", settings.GodotPath);
         Assert.Equal("", settings.GodotDataPath);
+        Assert.Null(settings.SortMode);
+        Assert.True(settings.FavoriteOnTop);
     }
 
     [Fact]
@@ -58,12 +60,31 @@ public class GodotSettingsStoreTests : IDisposable
         {
             GodotPath = @"C:\Godot\Godot.exe",
             GodotDataPath = @"C:\Data\Godot",
+            SortMode = ProjectSortMode.NameDesc,
+            FavoriteOnTop = false,
         });
 
         var loaded = CreateStore().Load();
 
         Assert.Equal(@"C:\Godot\Godot.exe", loaded.GodotPath);
         Assert.Equal(@"C:\Data\Godot", loaded.GodotDataPath);
+        Assert.Equal(ProjectSortMode.NameDesc, loaded.SortMode);
+        Assert.False(loaded.FavoriteOnTop);
+    }
+
+    [Fact]
+    public void Save_WhenSortModeNull_SavesNull()
+    {
+        CreateStore().Save(new GodotSettings
+        {
+            GodotPath = @"C:\Godot\Godot.exe",
+            GodotDataPath = @"C:\Data\Godot",
+            SortMode = null,
+        });
+
+        var loaded = CreateStore().Load();
+
+        Assert.Null(loaded.SortMode);
     }
 
     [Fact]

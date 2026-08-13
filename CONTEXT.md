@@ -23,3 +23,15 @@ _Avoid_: data folder, exe path
 **Project icon / 项目图标**:
 `project.godot` 的 `config/icon` 声明的图标。经 uid 缓存与 `res://` 前缀解析为可显示的文件路径；解析失败或文件缺失则为无图标。
 _Avoid_: icon path, icon string
+
+**Project favorite / 项目收藏**:
+`projects.cfg` 中由 Godot 编辑器维护的 `favorite` 布尔标志。扩展只读该标志，仅用于排序；从不写回该文件。
+_Avoid_: pinned, starred, favorite list
+
+**Project list order / 项目列表顺序**:
+项目列表的显示顺序，由排序方式与收藏置顶共同决定。catalog 输出恒为 cfg 顺序，排序发生在页面层。
+_Avoid_: sorted list, ordering
+
+**Sort mode / 排序方式**:
+用户选择的排序规则：配置顺序（默认，即 `projects.cfg` 中的出现顺序）或名称/路径的 A→Z/Z→A。比较器为文化感知。
+_Avoid_: sort order setting, ordering mode

@@ -20,6 +20,13 @@ public sealed record GodotSettings
 
     [JsonPropertyName("GodotDataPath")]
     public string GodotDataPath { get; init; } = string.Empty;
+
+    [JsonPropertyName("SortMode")]
+    [JsonConverter(typeof(JsonStringEnumConverter<ProjectSortMode>))]
+    public ProjectSortMode? SortMode { get; init; }
+
+    [JsonPropertyName("FavoriteOnTop")]
+    public bool FavoriteOnTop { get; init; } = true;
 }
 
 public sealed class GodotSettingsStore

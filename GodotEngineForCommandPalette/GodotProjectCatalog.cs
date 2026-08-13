@@ -21,7 +21,7 @@ internal sealed class FileSystem : IFileSystem
     public string ReadAllText(string path) => File.ReadAllText(path);
 }
 
-public sealed record GodotProject(string Title, string Path, string? IconPath, string? Error);
+public sealed record GodotProject(string Title, string Path, string? IconPath, string? Error, bool IsFavorite = false);
 
 public sealed class GodotProjectCatalog
 {
@@ -59,19 +59,31 @@ public sealed class GodotProjectCatalog
 
         foreach (var section in projectsCfg.GetSections())
         {
-            projects.Add(ReadProject(section));
+            projects.Add(ReadProject(section, IsFavorite(section, projectsCfg)));
         }
         return projects;
     }
 
-    private GodotProject ReadProject(string projectPath)
+    private static bool IsFavorite(string section, GodotConfigFile.ConfigFile projectsCfg)
+    {
+        try
+        {
+            return projectsCfg.GetValue(section, "favorite", false);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    private GodotProject ReadProject(string projectPath, bool isFavorite)
     {
         try
         {
             var projectGodotPath = Path.Join(projectPath, ProjectGodotFileName);
             if (!_fileSystem.FileExists(projectGodotPath))
             {
-                return Failed(projectPath, "project.godot not found");
+                return Failed(projectPath, "project.godot not found", isFavorite);
             }
 
             var projectCfg = new GodotConfigFile.ConfigFile();
@@ -81,16 +93,16 @@ public sealed class GodotProjectCatalog
             var icon = projectCfg.GetValue("application", "config/icon", "");
             var title = string.IsNullOrEmpty(name) ? DirectoryNameOf(projectPath) : name;
 
-            return new GodotProject(title, projectPath, ResolveIconPath(projectPath, icon), null);
+            return new GodotProject(title, projectPath, ResolveIconPath(projectPath, icon), null, isFavorite);
         }
         catch (Exception ex)
         {
-            return Failed(projectPath, ex.Message);
+            return Failed(projectPath, ex.Message, isFavorite);
         }
     }
 
-    private static GodotProject Failed(string projectPath, string message) =>
-        new(DirectoryNameOf(projectPath), projectPath, null, message);
+    private static GodotProject Failed(string projectPath, string message, bool isFavorite) =>
+        new(DirectoryNameOf(projectPath), projectPath, null, message, isFavorite);
 
     private static string DirectoryNameOf(string projectPath)
     {

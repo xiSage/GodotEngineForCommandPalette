@@ -165,4 +165,31 @@
   <data name="PageTitle" xml:space="preserve">
     <value>명령 팔레트용 Godot 엔진</value>
   </data>
+  <data name="SortModeLabel" xml:space="preserve">
+    <value>정렬</value>
+  </data>
+  <data name="SortModeDescription" xml:space="preserve">
+    <value>프로젝트 목록의 정렬 순서</value>
+  </data>
+  <data name="SortModeConfigOrder" xml:space="preserve">
+    <value>구성 순서</value>
+  </data>
+  <data name="SortModeNameAsc" xml:space="preserve">
+    <value>이름 (A-Z)</value>
+  </data>
+  <data name="SortModeNameDesc" xml:space="preserve">
+    <value>이름 (Z-A)</value>
+  </data>
+  <data name="SortModePathAsc" xml:space="preserve">
+    <value>경로 (A-Z)</value>
+  </data>
+  <data name="SortModePathDesc" xml:space="preserve">
+    <value>경로 (Z-A)</value>
+  </data>
+  <data name="FavoriteOnTopLabel" xml:space="preserve">
+    <value>즐겨찾기를 위로</value>
+  </data>
+  <data name="FavoriteOnTopDescription" xml:space="preserve">
+    <value>즐겨찾기 프로젝트를 다른 프로젝트보다 위에 고정</value>
+  </data>
 </root>

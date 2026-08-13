@@ -62,7 +62,8 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         }
         else
         {
-            foreach (var project in _catalog.FindProjects(_settings.GodotDataPath))
+            var projects = ProjectSorter.Sort(_catalog.FindProjects(_settings.GodotDataPath), _settings.SortMode, _settings.FavoriteOnTop);
+            foreach (var project in projects)
             {
                 if (project.Error is not null)
                 {

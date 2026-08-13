@@ -165,4 +165,31 @@
   <data name="PageTitle" xml:space="preserve">
     <value>Godot 引擎命令面板</value>
   </data>
+  <data name="SortModeLabel" xml:space="preserve">
+    <value>排序方式</value>
+  </data>
+  <data name="SortModeDescription" xml:space="preserve">
+    <value>项目列表的排序方式</value>
+  </data>
+  <data name="SortModeConfigOrder" xml:space="preserve">
+    <value>配置顺序</value>
+  </data>
+  <data name="SortModeNameAsc" xml:space="preserve">
+    <value>名称 (A-Z)</value>
+  </data>
+  <data name="SortModeNameDesc" xml:space="preserve">
+    <value>名称 (Z-A)</value>
+  </data>
+  <data name="SortModePathAsc" xml:space="preserve">
+    <value>路径 (A-Z)</value>
+  </data>
+  <data name="SortModePathDesc" xml:space="preserve">
+    <value>路径 (Z-A)</value>
+  </data>
+  <data name="FavoriteOnTopLabel" xml:space="preserve">
+    <value>收藏项目置顶</value>
+  </data>
+  <data name="FavoriteOnTopDescription" xml:space="preserve">
+    <value>将收藏项目固定在列表顶部</value>
+  </data>
 </root>

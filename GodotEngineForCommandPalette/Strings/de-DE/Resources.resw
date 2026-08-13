@@ -165,4 +165,31 @@
   <data name="PageTitle" xml:space="preserve">
     <value>Godot Engine für Befehlspalette</value>
   </data>
+  <data name="SortModeLabel" xml:space="preserve">
+    <value>Sortierart</value>
+  </data>
+  <data name="SortModeDescription" xml:space="preserve">
+    <value>Sortierreihenfolge der Projektliste</value>
+  </data>
+  <data name="SortModeConfigOrder" xml:space="preserve">
+    <value>Konfigurationsreihenfolge</value>
+  </data>
+  <data name="SortModeNameAsc" xml:space="preserve">
+    <value>Name (A-Z)</value>
+  </data>
+  <data name="SortModeNameDesc" xml:space="preserve">
+    <value>Name (Z-A)</value>
+  </data>
+  <data name="SortModePathAsc" xml:space="preserve">
+    <value>Pfad (A-Z)</value>
+  </data>
+  <data name="SortModePathDesc" xml:space="preserve">
+    <value>Pfad (Z-A)</value>
+  </data>
+  <data name="FavoriteOnTopLabel" xml:space="preserve">
+    <value>Favoriten oben</value>
+  </data>
+  <data name="FavoriteOnTopDescription" xml:space="preserve">
+    <value>Favoritenprojekte über anderen anzeigen</value>
+  </data>
 </root>

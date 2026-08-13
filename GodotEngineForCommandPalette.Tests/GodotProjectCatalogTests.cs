@@ -31,6 +31,12 @@ public class GodotProjectCatalogTests
         favorite=false
         """;
 
+    private const string FavoriteTrueCfg = """
+        [C:\Projects\MyGame]
+
+        favorite=true
+        """;
+
     private const string GoodProjectGodot = """
         ; Engine configuration file.
         config_version=5
@@ -112,6 +118,28 @@ public class GodotProjectCatalogTests
         Assert.Equal(OtherProjectPath, projects[1].Path);
         Assert.Equal("My Game", projects[0].Title);
         Assert.Equal("Other Game", projects[1].Title);
+    }
+
+    [Fact]
+    public void IsFavorite_IsTrue_WhenFavoriteFlagSet()
+    {
+        var fs = CreateFileSystem(FavoriteTrueCfg);
+        fs.AddFile(Path.Join(ProjectPath, "project.godot"), GoodProjectGodot);
+
+        var project = Assert.Single(CreateCatalog(fs).FindProjects(DataPath));
+
+        Assert.True(project.IsFavorite);
+    }
+
+    [Fact]
+    public void IsFavorite_IsFalse_WhenFavoriteFlagUnset()
+    {
+        var fs = CreateFileSystem(SingleSectionCfg);
+        fs.AddFile(Path.Join(ProjectPath, "project.godot"), GoodProjectGodot);
+
+        var project = Assert.Single(CreateCatalog(fs).FindProjects(DataPath));
+
+        Assert.False(project.IsFavorite);
     }
 
     [Fact]

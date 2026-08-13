@@ -165,4 +165,31 @@
   <data name="PageTitle" xml:space="preserve">
     <value>コマンド パレット用 Godot エンジン</value>
   </data>
+  <data name="SortModeLabel" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="SortModeDescription" xml:space="preserve">
+    <value>プロジェクト一覧の並べ替え順序</value>
+  </data>
+  <data name="SortModeConfigOrder" xml:space="preserve">
+    <value>構成順</value>
+  </data>
+  <data name="SortModeNameAsc" xml:space="preserve">
+    <value>名前 (A-Z)</value>
+  </data>
+  <data name="SortModeNameDesc" xml:space="preserve">
+    <value>名前 (Z-A)</value>
+  </data>
+  <data name="SortModePathAsc" xml:space="preserve">
+    <value>パス (A-Z)</value>
+  </data>
+  <data name="SortModePathDesc" xml:space="preserve">
+    <value>パス (Z-A)</value>
+  </data>
+  <data name="FavoriteOnTopLabel" xml:space="preserve">
+    <value>お気に入りを上に</value>
+  </data>
+  <data name="FavoriteOnTopDescription" xml:space="preserve">
+    <value>お気に入りのプロジェクトを他のプロジェクトより上に表示</value>
+  </data>
 </root>

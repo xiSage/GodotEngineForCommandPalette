@@ -2,14 +2,11 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using GodotResourceUID;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Text.Json;
 
 namespace GodotEngineForCommandPalette;
 
@@ -17,10 +14,7 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 {
     public readonly List<ListItem> ProjectItems = [];
     private readonly ListItem _refreshButton;
-    private static readonly JsonSerializerOptions _jsonSerializerOptions = new()
-    {
-        PropertyNameCaseInsensitive = true
-    };
+    private readonly GodotProjectCatalog _catalog = new(new FileSystem());
 
     private GodotSettings _settings;
 
@@ -66,43 +60,21 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         }
         else
         {
-
-            var projectsCfg = new GodotConfigFile.ConfigFile();
-            projectsCfg.Load(Path.Join(_settings.GodotDataPath, "projects.cfg"));
-            foreach (var section in projectsCfg.GetSections())
+            foreach (var project in _catalog.FindProjects(_settings.GodotDataPath))
             {
-                try
-                {
-                    var projectCfg = new GodotConfigFile.ConfigFile();
-                    projectCfg.Load(Path.Join(section, "project.godot"));
-                    var icon = projectCfg.GetValue("application", "config/icon", "");
-                    var name = projectCfg.GetValue("application", "config/name", "Unknown");
-                    //var features = projectsCfg.GetValue<string[]>("application", "config/features", []);
-
-                    if (icon.StartsWith("uid", StringComparison.Ordinal))
-                    {
-                        var uidCachePath = Path.Join(section, ".godot/uid_cache.bin");
-                        if (File.Exists(uidCachePath))
-                        {
-                            var conterted_icon = ResourceUID.GetPathFromCache(uidCachePath, icon);
-                            if (conterted_icon != "")
-                            {
-                                icon = conterted_icon;
-                            }
-                        }
-                    }
-                    ProjectItems.Add(new GodotProjectListItem(name, section, icon, _settings.GodotPath));
-                }
-                catch (Exception ex)
+                if (project.Error is not null)
                 {
                     ProjectItems.Add(new ListItem(new NoOpCommand())
                     {
                         Title = LocaleLoader.GetString("ErrorLoadingProject"),
-                        Subtitle = ex.Message
+                        Subtitle = project.Error
                     });
                 }
+                else
+                {
+                    ProjectItems.Add(new GodotProjectListItem(project, _settings.GodotPath));
+                }
             }
-
         }
         RaiseItemsChanged();
         IsLoading = false;
@@ -116,28 +88,17 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
 
 internal sealed partial class GodotProjectListItem : ListItem
 {
-    public GodotProjectListItem(string title, string path, string icon, string godotPath) : base(new NoOpCommand())
+    public GodotProjectListItem(GodotProject project, string godotPath) : base(new NoOpCommand())
     {
-        Title = title;
-        Subtitle = path;
-        Command = new AnonymousCommand(() => OpenProject(path, godotPath)) { Name = LocaleLoader.GetString("EditCommand"), Id = path };
-        var runCommand = new AnonymousCommand(() => RunProject(path, godotPath)) { Name = LocaleLoader.GetString("RunCommand") };
+        Title = project.Title;
+        Subtitle = project.Path;
+        Command = new AnonymousCommand(() => OpenProject(project.Path, godotPath)) { Name = LocaleLoader.GetString("EditCommand"), Id = project.Path };
+        var runCommand = new AnonymousCommand(() => RunProject(project.Path, godotPath)) { Name = LocaleLoader.GetString("RunCommand") };
         MoreCommands = [new CommandContextItem(runCommand)];
-        var iconPath = ResolveIconPath(path, icon);
-        if (!string.IsNullOrEmpty(iconPath) && File.Exists(iconPath))
+        if (project.IconPath is not null)
         {
-            Icon = new IconInfo(iconPath);
+            Icon = new IconInfo(project.IconPath);
         }
-    }
-
-    private static string ResolveIconPath(string projectPath, string icon)
-    {
-        const string resPrefix = "res://";
-        if (icon.StartsWith(resPrefix, StringComparison.Ordinal))
-        {
-            return Path.Join(projectPath, icon[resPrefix.Length..]);
-        }
-        return "";
     }
 
     private static void OpenProject(string path, string godotPath)

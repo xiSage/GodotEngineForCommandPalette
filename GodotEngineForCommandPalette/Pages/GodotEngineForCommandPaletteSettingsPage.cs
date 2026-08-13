@@ -50,11 +50,11 @@ internal sealed partial class GodotSettingsProvider : ICommandSettings
 
     private static List<ChoiceSetSetting.Choice> SortModeChoices() =>
     [
-        new("ConfigOrder", LocaleLoader.GetString("SortModeConfigOrder")),
-        new("NameAsc", LocaleLoader.GetString("SortModeNameAsc")),
-        new("NameDesc", LocaleLoader.GetString("SortModeNameDesc")),
-        new("PathAsc", LocaleLoader.GetString("SortModePathAsc")),
-        new("PathDesc", LocaleLoader.GetString("SortModePathDesc")),
+        new(LocaleLoader.GetString("SortModeConfigOrder"), "ConfigOrder"),
+        new(LocaleLoader.GetString("SortModeNameAsc"), "NameAsc"),
+        new(LocaleLoader.GetString("SortModeNameDesc"), "NameDesc"),
+        new(LocaleLoader.GetString("SortModePathAsc"), "PathAsc"),
+        new(LocaleLoader.GetString("SortModePathDesc"), "PathDesc"),
     ];
 
     public IContentPage SettingsPage => _settings.SettingsPage;

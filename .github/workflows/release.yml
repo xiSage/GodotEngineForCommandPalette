@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  # Manual runs let you rehearse the packaging on a branch before tagging.
+  # They only produce the artifact, they never create a GitHub Release.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to package: 3 or 4 numeric segments (e.g. 1.4.0 or 1.4.0.0). A 3-segment input is stored as 1.4.0.0.'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  package:
+    name: Build Store package
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('Directory.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # The tag is the source of truth for the version. pack-store.ps1 writes it to
+      # all three places that carry a version (csproj, Package.appxmanifest, app.manifest)
+      # and then verifies them, so a stale checkout cannot leak into the package.
+      - name: Resolve the version to package
+        shell: pwsh
+        run: |
+          if ('${{ github.ref_type }}' -eq 'tag') {
+            $version = '${{ github.ref_name }}'.TrimStart('v')
+          } else {
+            $version = '${{ inputs.version }}'
+          }
+
+          if ($version -notmatch '^\d+\.\d+\.\d+(\.\d+)?$') {
+            throw "Version '$version' must be 3 or 4 dot-separated numeric segments."
+          }
+          if ($version -match '^\d+\.\d+\.\d+$') {
+            $version = "$version.0"
+          }
+
+          $csproj = 'GodotEngineForCommandPalette/GodotEngineForCommandPalette.csproj'
+          $committed = ([regex]::Match((Get-Content $csproj -Raw), '<AppxPackageVersion>([^<]*)</AppxPackageVersion>')).Groups[1].Value
+          if ($committed -ne $version) {
+            Write-Host "::warning::The tag/input says $version but this commit has $committed. The tag wins: the package will be built as $version."
+          }
+
+          "PACKAGE_VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append
+          Write-Host "Packaging version: $version"
+
+      - name: Build the Store package
+        run: ./tools/pack-store.ps1 -Version $env:PACKAGE_VERSION
+
+      - name: Assert the .msixupload was produced
+        shell: pwsh
+        run: |
+          $uploads = @(Get-ChildItem artifacts -Filter *.msixupload)
+          if ($uploads.Count -eq 0) { throw "pack-store.ps1 finished but produced no .msixupload" }
+          $uploads | Format-Table Name, Length
+
+      - name: Upload the .msixupload artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: msixupload
+          path: artifacts/*.msixupload
+          if-no-files-found: error
+
+      - name: Create GitHub Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v3
+        with:
+          files: artifacts/*.msixupload
+          generate_release_notes: true
+          body: |
+            **Unsigned Microsoft Store submission package.** The attached `.msixupload` is the
+            bundle built for Partner Center submission; Windows cannot install it directly.
+            End users should install the extension from the [Microsoft Store](https://apps.microsoft.com/detail/9p401r7mt3s1).
+
+            ---

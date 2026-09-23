@@ -1,0 +1,33 @@
+version: 2
+
+updates:
+  # Package versions are managed centrally: versions live in Directory.Packages.props
+  # at the repository root (ManagePackageVersionsCentrally=true), so "/" is where
+  # Dependabot has to look.
+  - package-ecosystem: nuget
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all minor/patch bumps; majors keep their own PRs so they get
+      # reviewed individually.
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch

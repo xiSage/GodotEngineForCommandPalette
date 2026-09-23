@@ -2,6 +2,7 @@
 // xiSage licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using GodotConfigFile;
 using GodotResourceUID;
 using System;
 using System.Collections.Generic;
@@ -40,34 +41,25 @@ public sealed class GodotProjectCatalog(IFileSystem fileSystem)
             return projects;
         }
 
-        var projectsCfg = new GodotConfigFile.ConfigFile();
+        ConfigFileDocument projectsCfg;
         try
         {
-            projectsCfg.Parse(fileSystem.ReadAllText(projectsCfgPath));
+            projectsCfg = ConfigFile.Parse(fileSystem.ReadAllText(projectsCfgPath));
         }
         catch
         {
             return projects;
         }
 
-        foreach (var section in projectsCfg.GetSections())
+        foreach (var section in projectsCfg.SectionNames)
         {
             projects.Add(ReadProject(section, IsFavorite(section, projectsCfg)));
         }
         return projects;
     }
 
-    private static bool IsFavorite(string section, GodotConfigFile.ConfigFile projectsCfg)
-    {
-        try
-        {
-            return projectsCfg.GetValue(section, "favorite", false);
-        }
-        catch
-        {
-            return false;
-        }
-    }
+    private static bool IsFavorite(string section, ConfigFileDocument projectsCfg) =>
+        projectsCfg.GetValue<bool>(section, "favorite", false);
 
     private GodotProject ReadProject(string projectPath, bool isFavorite)
     {
@@ -79,11 +71,10 @@ public sealed class GodotProjectCatalog(IFileSystem fileSystem)
                 return Failed(projectPath, "project.godot not found", isFavorite);
             }
 
-            var projectCfg = new GodotConfigFile.ConfigFile();
-            projectCfg.Parse(fileSystem.ReadAllText(projectGodotPath));
+            var projectCfg = ConfigFile.Parse(fileSystem.ReadAllText(projectGodotPath));
 
-            var name = projectCfg.GetValue("application", "config/name", "");
-            var icon = projectCfg.GetValue("application", "config/icon", "");
+            var name = projectCfg.GetValue<string>("application", "config/name", "");
+            var icon = projectCfg.GetValue<string>("application", "config/icon", "");
             var title = string.IsNullOrEmpty(name) ? DirectoryNameOf(projectPath) : name;
 
             return new GodotProject(title, projectPath, ResolveIconPath(projectPath, icon), null, isFavorite);

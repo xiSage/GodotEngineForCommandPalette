@@ -105,6 +105,19 @@ public class GodotProjectCatalogTests
     }
 
     [Fact]
+    public void FindProjects_WhenProjectsCfgMalformed_ReturnsEmpty()
+    {
+        var fs = CreateFileSystem("""
+            [C:\Projects\MyGame]
+
+            favorite="unterminated
+            """);
+        var catalog = CreateCatalog(fs);
+
+        Assert.Empty(catalog.FindProjects(DataPath));
+    }
+
+    [Fact]
     public void FindProjects_ReturnsProjectsInCfgOrder()
     {
         var fs = CreateFileSystem(TwoSectionCfg);

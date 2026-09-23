@@ -182,9 +182,12 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# Note: Comment the next line if you want to checkin your web deploy settings,
-# but database connection strings (with potential passwords) will be unencrypted
-*.pubxml
+# *.pubxml is intentionally NOT ignored: Properties/PublishProfiles/win-*.pubxml are
+# required for the Windows App SDK to deploy the extension as a package (VS "Deploy"
+# and the MSIX packaging targets resolve them through <PublishProfile>). Microsoft's
+# Command Palette extension template ships them, and a standard C# .gitignore would
+# otherwise drop them so that nobody cloning the repository could deploy the extension.
+# See https://learn.microsoft.com/windows/powertoys/command-palette/creating-an-extension
 *.publishproj
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to

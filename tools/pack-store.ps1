@@ -103,9 +103,12 @@ if (Test-Path -LiteralPath $OutputDir) {
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 
 Write-Host "==> 构建 MSIX 上传包 (x64 + arm64, Release, AOT)"
+# -restore: dotnet msbuild 的 -t:Build 不会像 dotnet build 那样隐式还原，
+# 冷环境（CI runner）下缺少 obj/project.assets.json 会直接报 NETSDK1004。
 $msbuildArgs = @(
     'msbuild',
     $CsprojPath,
+    '-restore',
     '-t:Build',
     '-v:m',
     '-p:Configuration=Release',

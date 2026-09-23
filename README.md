@@ -67,4 +67,4 @@ GodotEngineForCommandPalette/
 ## Requirements
 
 - PowerToys with Command Palette enabled
-- .NET 10.0 Runtime
+- Windows 10, version 2004 (build 19041) or later

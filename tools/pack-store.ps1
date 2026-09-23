@@ -9,8 +9,9 @@
 
 .PARAMETER Version
     必填。Store 版本号，格式 x.y.z.w，且必须高于 Store 中已有的最高版本。
-    脚本会同步写入 GodotEngineForCommandPalette.csproj 的 <AppxPackageVersion>
-    与 Package.appxmanifest 的 <Identity Version>（持久化）。
+    脚本会同步写入 GodotEngineForCommandPalette.csproj 的 <AppxPackageVersion>、
+    Package.appxmanifest 的 <Identity Version> 与 app.manifest 的
+    <assemblyIdentity version>（持久化），并在写入后校验三处一致。
 
 .PARAMETER OutputDir
     可选。.msixupload 输出目录，默认 <仓库根>\artifacts（每次运行先清空）。
@@ -33,6 +34,7 @@ $RepoRoot = Split-Path -Parent $PSScriptRoot
 $ProjectDir = Join-Path $RepoRoot 'GodotEngineForCommandPalette'
 $CsprojPath = Join-Path $ProjectDir 'GodotEngineForCommandPalette.csproj'
 $ManifestPath = Join-Path $ProjectDir 'Package.appxmanifest'
+$AppManifestPath = Join-Path $ProjectDir 'app.manifest'
 $AppPackagesDir = Join-Path $ProjectDir 'AppPackages'
 
 if (-not $OutputDir) {
@@ -40,7 +42,7 @@ if (-not $OutputDir) {
 }
 $OutputDir = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputDir)
 
-foreach ($p in @($CsprojPath, $ManifestPath)) {
+foreach ($p in @($CsprojPath, $ManifestPath, $AppManifestPath)) {
     if (-not (Test-Path -LiteralPath $p)) {
         throw "找不到文件: $p"
     }
@@ -71,6 +73,24 @@ function Update-VersionInFile {
 Write-Host "==> 更新版本号到 $Version"
 Update-VersionInFile -Path $CsprojPath -Pattern '(<AppxPackageVersion>)[^<]*(</AppxPackageVersion>)' -NewVersion $Version
 Update-VersionInFile -Path $ManifestPath -Pattern '(<Identity[^>]*Version=")\d+\.\d+\.\d+\.\d+(")' -NewVersion $Version
+Update-VersionInFile -Path $AppManifestPath -Pattern '(<assemblyIdentity[^>]*version=")\d+\.\d+\.\d+\.\d+(")' -NewVersion $Version
+
+Write-Host "==> 校验三处版本号"
+$versionChecks = @(
+    @{ Path = $CsprojPath;      Pattern = '<AppxPackageVersion>([^<]*)</AppxPackageVersion>' }
+    @{ Path = $ManifestPath;    Pattern = '<Identity[^>]*Version="([^"]*)"' }
+    @{ Path = $AppManifestPath; Pattern = '<assemblyIdentity[^>]*version="([^"]*)"' }
+)
+foreach ($check in $versionChecks) {
+    $match = [regex]::Match([System.IO.File]::ReadAllText($check.Path), $check.Pattern)
+    if (-not $match.Success) {
+        throw "版本号校验失败: 在 $($check.Path) 中未找到版本号"
+    }
+    if ($match.Groups[1].Value -ne $Version) {
+        throw "版本号校验失败: $($check.Path) 中为 $($match.Groups[1].Value)，期望 $Version"
+    }
+    Write-Host "    OK  $Version  $($check.Path)"
+}
 
 if ($OutputDir -eq $RepoRoot -or $OutputDir -eq $ProjectDir) {
     throw "拒绝清空危险目录: $OutputDir"

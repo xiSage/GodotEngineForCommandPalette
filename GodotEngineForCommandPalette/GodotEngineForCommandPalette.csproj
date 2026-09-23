@@ -311,6 +311,11 @@
 
     <!-- In release, also ignore the aforementioned ILLink warning -->
     <ILLinkTreatWarningsAsErrors>false</ILLinkTreatWarningsAsErrors>
+
+    <!-- Trimming is only supported for self-contained apps; without this, any
+         RID-specific Release build fails with NETSDK1102. Guarded on
+         RuntimeIdentifier, because SelfContained without a RID is NETSDK1031. -->
+    <SelfContained Condition="'$(RuntimeIdentifier)' != ''">true</SelfContained>
   </PropertyGroup>
 
     <PropertyGroup>

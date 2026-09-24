@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>Favoritenprojekte über anderen anzeigen</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>Godot Engine für Befehlspalette ist eine Erweiterung für die PowerToys-Befehlspalette und hat kein eigenes Fenster.</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>Wählen Sie „OK“, um die Befehlspalette zu öffnen, und suchen Sie dann nach „{0}“. Sie können die Befehlspalette auch jederzeit mit Win+Alt+Leertaste öffnen.</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>Die Befehlspalette konnte nicht geöffnet werden. Installieren oder starten Sie die PowerToys-Befehlspalette und versuchen Sie es erneut, oder öffnen Sie sie manuell mit Win+Alt+Leertaste.</value>
+  </data>
 </root>

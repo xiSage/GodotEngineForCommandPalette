@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>お気に入りのプロジェクトを他のプロジェクトより上に表示</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>Godot エンジン for コマンド パレットは PowerToys コマンド パレットの拡張機能であり、独自のウィンドウはありません。</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>「OK」を選択してコマンド パレットを開き、「{0}」を検索します。いつでも Win+Alt+Space でコマンド パレットを開くこともできます。</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>コマンド パレットを開けませんでした。PowerToys コマンド パレットをインストールまたは起動してからもう一度お試しになるか、Win+Alt+Space で手動で開いてください。</value>
+  </data>
 </root>

@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>Épingler les projets favoris en haut</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>Godot Engine pour Palette de commandes est une extension de la palette de commandes PowerToys et n'a donc pas de fenêtre propre.</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>Sélectionnez « OK » pour ouvrir la palette de commandes, puis recherchez « {0} ». Vous pouvez aussi l'ouvrir à tout moment avec Win+Alt+Espace.</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>Impossible d'ouvrir la palette de commandes. Installez ou démarrez la palette de commandes PowerToys, puis réessayez, ou ouvrez-la manuellement avec Win+Alt+Espace.</value>
+  </data>
 </root>

@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>즐겨찾기 프로젝트를 다른 프로젝트보다 위에 고정</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>명령 팔레트용 Godot 엔진은 PowerToys 명령 팔레트의 확장이므로 자체 창이 없습니다.</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>'확인'을 선택하여 명령 팔레트를 연 다음 '{0}'을(를) 검색하세요. 언제든지 Win+Alt+Space를 눌러 명령 팔레트를 열 수도 있습니다.</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>명령 팔레트를 열 수 없습니다. PowerToys 명령 팔레트를 설치하거나 시작한 후 다시 시도하거나 Win+Alt+Space를 눌러 직접 여세요.</value>
+  </data>
 </root>

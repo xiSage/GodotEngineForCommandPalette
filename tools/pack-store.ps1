@@ -10,8 +10,10 @@
 .PARAMETER Version
     必填。Store 版本号，格式 x.y.z.w，且必须高于 Store 中已有的最高版本。
     脚本会同步写入 GodotEngineForCommandPalette.csproj 的 <AppxPackageVersion>、
-    Package.appxmanifest 的 <Identity Version> 与 app.manifest 的
-    <assemblyIdentity version>（持久化），并在写入后校验三处一致。
+    Package.appxmanifest 的 <Identity Version> 与 app.manifest 中应用自身
+    <assemblyIdentity version>（按 name="GodotEngineForCommandPalette.app" 定位；
+    Common Controls 依赖的 version="6.0.0.0" 属于 OS 定义，不能被改），
+    并在写入后校验三处一致。
 
 .PARAMETER OutputDir
     可选。.msixupload 输出目录，默认 <仓库根>\artifacts（每次运行先清空）。
@@ -73,13 +75,16 @@ function Update-VersionInFile {
 Write-Host "==> 更新版本号到 $Version"
 Update-VersionInFile -Path $CsprojPath -Pattern '(<AppxPackageVersion>)[^<]*(</AppxPackageVersion>)' -NewVersion $Version
 Update-VersionInFile -Path $ManifestPath -Pattern '(<Identity[^>]*Version=")\d+\.\d+\.\d+\.\d+(")' -NewVersion $Version
-Update-VersionInFile -Path $AppManifestPath -Pattern '(<assemblyIdentity[^>]*version=")\d+\.\d+\.\d+\.\d+(")' -NewVersion $Version
+# app.manifest 里有两个 <assemblyIdentity>：应用自身（version 在前、name 指向 *.app）和 Common
+# Controls 依赖（version="6.0.0.0" 由 OS 定义）。必须锚定前者，否则依赖版本会被一起改成应用
+# 版本号，exe 启动即报"并行配置不正确"（SxS / 事件日志 SideBySide Id 33）。
+Update-VersionInFile -Path $AppManifestPath -Pattern '(<assemblyIdentity\s+version=")\d+\.\d+\.\d+\.\d+("\s+name="GodotEngineForCommandPalette\.app")' -NewVersion $Version
 
 Write-Host "==> 校验三处版本号"
 $versionChecks = @(
     @{ Path = $CsprojPath;      Pattern = '<AppxPackageVersion>([^<]*)</AppxPackageVersion>' }
     @{ Path = $ManifestPath;    Pattern = '<Identity[^>]*Version="([^"]*)"' }
-    @{ Path = $AppManifestPath; Pattern = '<assemblyIdentity[^>]*version="([^"]*)"' }
+    @{ Path = $AppManifestPath; Pattern = '<assemblyIdentity\s+version="([^"]*)"\s+name="GodotEngineForCommandPalette\.app"' }
 )
 foreach ($check in $versionChecks) {
     $match = [regex]::Match([System.IO.File]::ReadAllText($check.Path), $check.Pattern)
@@ -90,6 +95,14 @@ foreach ($check in $versionChecks) {
         throw "版本号校验失败: $($check.Path) 中为 $($match.Groups[1].Value)，期望 $Version"
     }
     Write-Host "    OK  $Version  $($check.Path)"
+}
+
+# 回归护栏：Common Controls 依赖的版本必须保持 OS 定义的 6.0.0.0。
+$commonControls = [regex]::Match(
+    [System.IO.File]::ReadAllText($AppManifestPath),
+    '<assemblyIdentity[^>]*name="Microsoft\.Windows\.Common-Controls"[^>]*version="([^"]*)"')
+if ($commonControls.Success -and $commonControls.Groups[1].Value -ne '6.0.0.0') {
+    throw "app.manifest 中 Common Controls 依赖的版本是 $($commonControls.Groups[1].Value)，应为 6.0.0.0，否则 exe 无法启动"
 }
 
 if ($OutputDir -eq $RepoRoot -or $OutputDir -eq $ProjectDir) {

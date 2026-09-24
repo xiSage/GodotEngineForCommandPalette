@@ -39,6 +39,12 @@ Before using the extension, you need to configure the following settings:
    - **Run**: Press ctrl + enter on the project to run the project directly
 5. Click "Refresh" at the bottom to update the project list
 
+> **Note**
+> The extension has no window of its own: it only shows up inside PowerToys Command Palette.
+> Starting the app directly (for example from the Start menu) therefore shows a short dialog that
+> explains this and can open Command Palette for you. Starting it with `--open` skips the dialog and
+> opens Command Palette right away, while `--silent` exits without showing anything.
+
 ## How It Works
 
 The extension works by:

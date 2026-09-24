@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>Pin favorite projects above others</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>Godot Engine for Command Palette is an extension for PowerToys Command Palette, so it has no window of its own.</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>Select "OK" to open Command Palette, then search for "{0}". You can also press Win+Alt+Space at any time.</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>Command Palette could not be opened. Install or start PowerToys Command Palette and try again, or press Win+Alt+Space to open it manually.</value>
+  </data>
 </root>

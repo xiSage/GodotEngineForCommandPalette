@@ -192,4 +192,13 @@
   <data name="FavoriteOnTopDescription" xml:space="preserve">
     <value>将收藏项目固定在列表顶部</value>
   </data>
+  <data name="StandaloneDialogMessage" xml:space="preserve">
+    <value>「Godot 引擎命令面板」是 PowerToys 命令面板的扩展，自身没有窗口。</value>
+  </data>
+  <data name="StandaloneDialogHint" xml:space="preserve">
+    <value>点击「确定」打开命令面板，然后搜索「{0}」；也可以随时按 Win+Alt+Space 打开命令面板。</value>
+  </data>
+  <data name="StandaloneOpenFailedMessage" xml:space="preserve">
+    <value>无法打开命令面板。请先安装并启动 PowerToys 命令面板后重试，或按 Win+Alt+Space 手动打开。</value>
+  </data>
 </root>

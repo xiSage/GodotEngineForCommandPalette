@@ -40,7 +40,9 @@ public class Program
         }
         else
         {
-            Console.WriteLine("Not being launched as a Extension... exiting.");
+            // Started on its own (for example from the Start menu): there is no window to show, so
+            // tell the user what this is and offer to open Command Palette.
+            StandaloneLaunch.Run(args);
         }
     }
 }

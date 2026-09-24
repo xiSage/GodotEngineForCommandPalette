@@ -201,4 +201,22 @@
   <data name="StandaloneOpenFailedMessage" xml:space="preserve">
     <value>Die Befehlspalette konnte nicht geöffnet werden. Installieren oder starten Sie die PowerToys-Befehlspalette und versuchen Sie es erneut, oder öffnen Sie sie manuell mit Win+Alt+Leertaste.</value>
   </data>
+  <data name="DetailsPath" xml:space="preserve">
+    <value>Pfad</value>
+  </data>
+  <data name="DetailsMainScene" xml:space="preserve">
+    <value>Hauptszene</value>
+  </data>
+  <data name="DetailsGodotVersion" xml:space="preserve">
+    <value>Godot-Version</value>
+  </data>
+  <data name="DetailsFeatures" xml:space="preserve">
+    <value>Merkmale</value>
+  </data>
+  <data name="DetailsConfigVersion" xml:space="preserve">
+    <value>Konfigurationsversion</value>
+  </data>
+  <data name="DetailsError" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
 </root>

@@ -4,6 +4,8 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
+using System;
+using System.Collections.Generic;
 
 namespace GodotEngineForCommandPalette;
 
@@ -41,7 +43,19 @@ public partial class GodotEngineForCommandPaletteCommandsProvider : CommandProvi
             return null;
         }
 
-        foreach (var project in _catalog.FindProjects(settings.GodotDataPath))
+        List<GodotProject> projects;
+        try
+        {
+            projects = _catalog.FindProjects(settings.GodotDataPath);
+        }
+        catch (Exception)
+        {
+            // A discovery failure is the page's story to tell - it renders a row for it. Here there is simply
+            // nothing to resolve, and no project can match an id that was never listed.
+            return null;
+        }
+
+        foreach (var project in projects)
         {
             if (project.Error is null && project.Path == id)
             {

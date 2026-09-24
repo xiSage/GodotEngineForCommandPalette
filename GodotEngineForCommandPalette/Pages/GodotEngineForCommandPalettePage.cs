@@ -26,6 +26,9 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         Title = LocaleLoader.GetString("PageTitle");
         Name = LocaleLoader.GetString("PageName");
 
+        // Open the details pane together with the selection, the way the built-in Search apps page does.
+        ShowDetails = true;
+
         _settings = _store.Load();
 
         // Subscribe to settings changes
@@ -62,26 +65,49 @@ internal sealed partial class GodotEngineForCommandPalettePage : ListPage
         }
         else
         {
-            var projects = ProjectSorter.Sort(_catalog.FindProjects(_settings.GodotDataPath), _settings.SortMode, _settings.FavoriteOnTop);
+            List<GodotProject> projects;
+            try
+            {
+                projects = ProjectSorter.Sort(_catalog.FindProjects(_settings.GodotDataPath), _settings.SortMode, _settings.FavoriteOnTop);
+            }
+            catch (Exception ex)
+            {
+                // The catalog already swallows an unreadable projects.cfg, so this only catches what it could
+                // not anticipate. Report that as a single row instead of an empty list that never finishes
+                // loading.
+                projects =
+                [
+                    new GodotProject(
+                        LocaleLoader.GetString("ErrorLoadingProject"),
+                        _settings.GodotDataPath,
+                        null,
+                        ex.Message),
+                ];
+            }
+
             foreach (var project in projects)
             {
-                if (project.Error is not null)
+                if (project.Error is null)
                 {
-                    ProjectItems.Add(new ListItem(new NoOpCommand())
-                    {
-                        Title = LocaleLoader.GetString("ErrorLoadingProject"),
-                        Subtitle = project.Error
-                    });
+                    ProjectItems.Add(new GodotProjectListItem(project, _settings.GodotPath));
                 }
                 else
                 {
-                    ProjectItems.Add(new GodotProjectListItem(project, _settings.GodotPath));
+                    ProjectItems.Add(FailedProjectListItem(project, project.Error));
                 }
             }
         }
         RaiseItemsChanged();
         IsLoading = false;
     }
+
+    private static ListItem FailedProjectListItem(GodotProject project, string error) =>
+        new(new NoOpCommand())
+        {
+            Title = LocaleLoader.GetString("ErrorLoadingProject"),
+            Subtitle = error,
+            Details = GodotProjectDetails.ForFailedProject(project, error),
+        };
 
     public override IListItem[] GetItems()
     {
@@ -104,5 +130,7 @@ internal sealed partial class GodotProjectListItem : ListItem
         {
             Icon = new IconInfo(project.IconPath);
         }
+
+        Details = GodotProjectDetails.ForProject(project);
     }
 }

@@ -201,4 +201,22 @@
   <data name="StandaloneOpenFailedMessage" xml:space="preserve">
     <value>Impossibile aprire la Palette dei Comandi. Installa o avvia la Palette dei Comandi di PowerToys e riprova, oppure aprila manualmente con Win+Alt+Spazio.</value>
   </data>
+  <data name="DetailsPath" xml:space="preserve">
+    <value>Percorso</value>
+  </data>
+  <data name="DetailsMainScene" xml:space="preserve">
+    <value>Scena principale</value>
+  </data>
+  <data name="DetailsGodotVersion" xml:space="preserve">
+    <value>Versione di Godot</value>
+  </data>
+  <data name="DetailsFeatures" xml:space="preserve">
+    <value>Funzionalità</value>
+  </data>
+  <data name="DetailsConfigVersion" xml:space="preserve">
+    <value>Versione di configurazione</value>
+  </data>
+  <data name="DetailsError" xml:space="preserve">
+    <value>Errore</value>
+  </data>
 </root>

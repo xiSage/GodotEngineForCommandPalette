@@ -201,4 +201,22 @@
   <data name="StandaloneOpenFailedMessage" xml:space="preserve">
     <value>Command Palette could not be opened. Install or start PowerToys Command Palette and try again, or press Win+Alt+Space to open it manually.</value>
   </data>
+  <data name="DetailsPath" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="DetailsMainScene" xml:space="preserve">
+    <value>Main scene</value>
+  </data>
+  <data name="DetailsGodotVersion" xml:space="preserve">
+    <value>Godot version</value>
+  </data>
+  <data name="DetailsFeatures" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="DetailsConfigVersion" xml:space="preserve">
+    <value>Config version</value>
+  </data>
+  <data name="DetailsError" xml:space="preserve">
+    <value>Error</value>
+  </data>
 </root>

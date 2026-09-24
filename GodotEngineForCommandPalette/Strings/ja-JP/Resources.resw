@@ -201,4 +201,22 @@
   <data name="StandaloneOpenFailedMessage" xml:space="preserve">
     <value>コマンド パレットを開けませんでした。PowerToys コマンド パレットをインストールまたは起動してからもう一度お試しになるか、Win+Alt+Space で手動で開いてください。</value>
   </data>
+  <data name="DetailsPath" xml:space="preserve">
+    <value>パス</value>
+  </data>
+  <data name="DetailsMainScene" xml:space="preserve">
+    <value>メインシーン</value>
+  </data>
+  <data name="DetailsGodotVersion" xml:space="preserve">
+    <value>Godot バージョン</value>
+  </data>
+  <data name="DetailsFeatures" xml:space="preserve">
+    <value>機能</value>
+  </data>
+  <data name="DetailsConfigVersion" xml:space="preserve">
+    <value>設定バージョン</value>
+  </data>
+  <data name="DetailsError" xml:space="preserve">
+    <value>エラー</value>
+  </data>
 </root>

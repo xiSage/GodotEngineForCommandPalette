@@ -47,6 +47,8 @@ public class GodotProjectCatalogTests
         config/icon="res://icon.svg"
         """;
 
+    private static readonly string[] ExpectedFeatures = ["4.4", "C#", "Forward Plus"];
+
     private const string GoodOtherProjectGodot = """
         ; Engine configuration file.
         config_version=5
@@ -355,5 +357,61 @@ public class GodotProjectCatalogTests
         Assert.NotNull(projects[0].Error);
         Assert.Null(projects[1].Error);
         Assert.Equal("Other Game", projects[1].Title);
+    }
+
+    [Fact]
+    public void ProjectGodot_MetadataIsRead()
+    {
+        var fs = WithProjectGodot(CreateSingleProjectFileSystem(), """
+            ; Engine configuration file.
+            config_version=5
+
+            [application]
+
+            config/name="My Game"
+            config/icon="res://icon.svg"
+            config/features=PackedStringArray("4.4", "C#", "Forward Plus")
+            run/main_scene="res://scenes/main.tscn"
+            """);
+
+        var project = SingleProject(fs);
+
+        Assert.Equal("4.4", project.GodotVersion);
+        Assert.Equal(ExpectedFeatures, project.Features);
+        Assert.Equal("res://scenes/main.tscn", project.MainScene);
+        Assert.Equal(5, project.ConfigVersion);
+    }
+
+    [Fact]
+    public void ProjectGodot_Malformed_ReturnsError()
+    {
+        var fs = WithProjectGodot(CreateSingleProjectFileSystem(), """
+            [application
+            config/name="My Game"
+            """);
+
+        var project = SingleProject(fs);
+
+        Assert.NotNull(project.Error);
+        Assert.Equal("MyGame", project.Title);
+        Assert.Null(project.GodotVersion);
+    }
+
+    [Fact]
+    public void ProjectGodot_WithoutMetadata_LeavesMetadataMembersNull()
+    {
+        var fs = WithProjectGodot(CreateSingleProjectFileSystem(), """
+            [application]
+
+            config/name="My Game"
+            config/icon="res://icon.svg"
+            """);
+
+        var project = SingleProject(fs);
+
+        Assert.Null(project.GodotVersion);
+        Assert.Null(project.Features);
+        Assert.Null(project.MainScene);
+        Assert.Null(project.ConfigVersion);
     }
 }

@@ -201,4 +201,22 @@
   <data name="StandaloneOpenFailedMessage" xml:space="preserve">
     <value>无法打开命令面板。请先安装并启动 PowerToys 命令面板后重试，或按 Win+Alt+Space 手动打开。</value>
   </data>
+  <data name="DetailsPath" xml:space="preserve">
+    <value>路径</value>
+  </data>
+  <data name="DetailsMainScene" xml:space="preserve">
+    <value>主场景</value>
+  </data>
+  <data name="DetailsGodotVersion" xml:space="preserve">
+    <value>Godot 版本</value>
+  </data>
+  <data name="DetailsFeatures" xml:space="preserve">
+    <value>特性</value>
+  </data>
+  <data name="DetailsConfigVersion" xml:space="preserve">
+    <value>配置版本</value>
+  </data>
+  <data name="DetailsError" xml:space="preserve">
+    <value>错误</value>
+  </data>
 </root>

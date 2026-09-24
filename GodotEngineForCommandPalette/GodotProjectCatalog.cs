@@ -22,7 +22,16 @@ internal sealed class FileSystem : IFileSystem
     public string ReadAllText(string path) => File.ReadAllText(path);
 }
 
-public sealed record GodotProject(string Title, string Path, string? IconPath, string? Error, bool IsFavorite = false);
+public sealed record GodotProject(
+    string Title,
+    string Path,
+    string? IconPath,
+    string? Error,
+    bool IsFavorite = false,
+    string? GodotVersion = null,
+    IReadOnlyList<string>? Features = null,
+    string? MainScene = null,
+    int? ConfigVersion = null);
 
 public sealed class GodotProjectCatalog(IFileSystem fileSystem)
 {
@@ -53,18 +62,18 @@ public sealed class GodotProjectCatalog(IFileSystem fileSystem)
 
         foreach (var section in projectsCfg.SectionNames)
         {
-            projects.Add(ReadProject(section, IsFavorite(section, projectsCfg)));
+            projects.Add(ReadProject(section, projectsCfg));
         }
         return projects;
     }
 
-    private static bool IsFavorite(string section, ConfigFileDocument projectsCfg) =>
-        projectsCfg.GetValue<bool>(section, "favorite", false);
-
-    private GodotProject ReadProject(string projectPath, bool isFavorite)
+    private GodotProject ReadProject(string projectPath, ConfigFileDocument projectsCfg)
     {
+        var isFavorite = false;
         try
         {
+            isFavorite = projectsCfg.GetValue<bool>(projectPath, "favorite", false);
+
             var projectGodotPath = Path.Join(projectPath, ProjectGodotFileName);
             if (!fileSystem.FileExists(projectGodotPath))
             {
@@ -77,7 +86,21 @@ public sealed class GodotProjectCatalog(IFileSystem fileSystem)
             var icon = projectCfg.GetValue<string>("application", "config/icon", "");
             var title = string.IsNullOrEmpty(name) ? DirectoryNameOf(projectPath) : name;
 
-            return new GodotProject(title, projectPath, ResolveIconPath(projectPath, icon), null, isFavorite);
+            var features = projectCfg.GetValue<string[]>("application", "config/features", []);
+            var mainScene = projectCfg.GetValue<string>("application", "run/main_scene", "");
+            // A project without the key answers -1, so a declared 0 is still distinguishable from a missing one.
+            var configVersion = projectCfg.GetValue<int>(ConfigFile.RootSection, "config_version", -1);
+
+            return new GodotProject(
+                title,
+                projectPath,
+                ResolveIconPath(projectPath, icon),
+                null,
+                isFavorite,
+                features.Length > 0 ? features[0] : null,
+                features.Length > 0 ? features : null,
+                string.IsNullOrEmpty(mainScene) ? null : mainScene,
+                configVersion >= 0 ? configVersion : null);
         }
         catch (Exception ex)
         {

@@ -102,6 +102,13 @@ if (Test-Path -LiteralPath $OutputDir) {
 }
 New-Item -ItemType Directory -Path $OutputDir -Force | Out-Null
 
+# Appx 打包会把项目目录里已有的 AppPackages 内容一并打进新包：上一次运行留下的
+# .msixupload 会被塞进本次的每个架构包里，包体从约 27 MB 膨胀到约 88 MB，所以先清掉。
+if (Test-Path -LiteralPath $AppPackagesDir) {
+    Write-Host "==> 清空上一次的 AppPackages: $AppPackagesDir"
+    Remove-Item -LiteralPath $AppPackagesDir -Recurse -Force
+}
+
 Write-Host "==> 构建 MSIX 上传包 (x64 + arm64, Release, AOT)"
 # -restore: dotnet msbuild 的 -t:Build 不会像 dotnet build 那样隐式还原，
 # 冷环境（CI runner）下缺少 obj/project.assets.json 会直接报 NETSDK1004。

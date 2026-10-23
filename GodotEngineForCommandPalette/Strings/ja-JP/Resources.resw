@@ -219,4 +219,7 @@
   <data name="DetailsError" xml:space="preserve">
     <value>エラー</value>
   </data>
+  <data name="RepositoryLink" xml:space="preserve">
+    <value>GitHub で見る</value>
+  </data>
 </root>

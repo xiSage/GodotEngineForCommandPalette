@@ -219,4 +219,7 @@
   <data name="DetailsError" xml:space="preserve">
     <value>錯誤</value>
   </data>
+  <data name="RepositoryLink" xml:space="preserve">
+    <value>在 GitHub 上檢視</value>
+  </data>
 </root>

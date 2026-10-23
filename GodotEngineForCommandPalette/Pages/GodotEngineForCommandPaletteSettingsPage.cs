@@ -14,6 +14,7 @@ internal sealed partial class GodotSettingsProvider : ICommandSettings
     private readonly Settings _settings;
     private readonly GodotSettingsStore _store;
     private GodotSettings _godotSettings;
+    private GodotSettingsPage? _settingsPage;
 
     public GodotSettingsProvider(GodotSettingsStore store)
     {
@@ -57,7 +58,11 @@ internal sealed partial class GodotSettingsProvider : ICommandSettings
         new(LocaleLoader.GetString("SortModePathDesc"), "PathDesc"),
     ];
 
-    public IContentPage SettingsPage => _settings.SettingsPage;
+    // The toolkit can only put input controls into a Settings object, so the settings page is a page of our
+    // own: it shows the same form plus one markdown link to the repository, which the shell opens in the
+    // default browser. The shell reads this property more than once, so keep one page instead of building a
+    // new one per read.
+    public IContentPage SettingsPage => _settingsPage ??= new GodotSettingsPage(_settings);
 
     public string ToJson()
     {
@@ -85,4 +90,29 @@ internal sealed partial class GodotSettingsProvider : ICommandSettings
 
     private static ProjectSortMode? ParseSortMode(string? value) =>
         Enum.TryParse(value, ignoreCase: true, out ProjectSortMode mode) ? mode : null;
+}
+
+// Settings hands out its own page and only accepts input controls, so a link has to live on a page of our
+// own. Everything above it is the toolkit's form, unchanged; the link is the last thing on the page.
+internal sealed partial class GodotSettingsPage : ContentPage
+{
+    private const string RepositoryUrl = "https://github.com/xiSage/GodotEngineForCommandPalette";
+
+    private readonly Settings _settings;
+
+    public GodotSettingsPage(Settings settings)
+    {
+        _settings = settings;
+        Name = LocaleLoader.GetString("DisplayName");
+        Icon = new IconInfo("\uE713"); // Settings icon
+
+        // The form is rebuilt whenever a value changes, so the page has to tell the shell to fetch it again.
+        _settings.SettingsChanged += (sender, e) => RaiseItemsChanged();
+    }
+
+    public override IContent[] GetContent() =>
+    [
+        .. _settings.ToContent(),
+        new MarkdownContent($"[{LocaleLoader.GetString("RepositoryLink")}]({RepositoryUrl})"),
+    ];
 }
